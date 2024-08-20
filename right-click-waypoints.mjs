@@ -1,6 +1,6 @@
 const MODULE = "pf2e-right-click-waypoints";
 
-Hooks.once("ready", () => {
+Hooks.once("init", () => {
     if (!game.modules.get('lib-wrapper')?.active && game.user.isGM) {
         return ui.notifications.error("PF2e Right Click Waypoints requires the 'libWrapper' module. Please install and activate it.");
     }
@@ -20,4 +20,18 @@ Hooks.once("ready", () => {
             canvas.mouseInteractionManager.cancel();
         }
     })
+
+    game.keybindings.register(MODULE, "removeWaypoint", {
+        name: "Remove Waypoint",
+        hint: "Remove a waypoint while using drag measurement.",
+        editable: [{ key: "Space", modifiers: [] }],
+        onUp: () => {
+            if (canvas.ready && canvas.controls.ruler.isMeasuring && game.pf2e.settings.dragMeasurement) {
+                canvas.controls.ruler._removeWaypoint();
+                return true;
+            } else {
+                return false;
+            }
+        },
+    });
 })
